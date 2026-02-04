@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { name: "Features", href: "#features" },
@@ -13,6 +15,7 @@ const navItems = [
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,31 +85,47 @@ const Navbar = () => {
 
             {/* CTA Buttons */}
             <div className="hidden md:flex items-center gap-3">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Button
-                  variant="ghost"
-                  className="magnetic-hover"
-                  onClick={() => scrollToSection("#dashboard")}
+              {user && isAdmin ? (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  View Demo
-                </Button>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Button
-                  className="magnetic-hover bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
-                  onClick={() => scrollToSection("#features")}
-                >
-                  Get Started
-                </Button>
-              </motion.div>
+                  <Link to="/dashboard">
+                    <Button className="magnetic-hover bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl gap-2">
+                      <LayoutDashboard className="w-4 h-4" />
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                </motion.div>
+              ) : (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <Link to="/auth">
+                      <Button variant="ghost" className="magnetic-hover gap-2">
+                        <LogIn className="w-4 h-4" />
+                        Admin Login
+                      </Button>
+                    </Link>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <Button
+                      className="magnetic-hover bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
+                      onClick={() => scrollToSection("#features")}
+                    >
+                      Get Started
+                    </Button>
+                  </motion.div>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -150,12 +169,29 @@ const Navbar = () => {
                   </motion.button>
                 ))}
                 <div className="h-px bg-border my-2" />
-                <Button
-                  className="w-full bg-gradient-to-r from-primary to-accent"
-                  onClick={() => scrollToSection("#features")}
-                >
-                  Get Started
-                </Button>
+                {user && isAdmin ? (
+                  <Link to="/dashboard">
+                    <Button className="w-full bg-gradient-to-r from-primary to-accent gap-2">
+                      <LayoutDashboard className="w-4 h-4" />
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/auth">
+                      <Button variant="outline" className="w-full gap-2 mb-2">
+                        <LogIn className="w-4 h-4" />
+                        Admin Login
+                      </Button>
+                    </Link>
+                    <Button
+                      className="w-full bg-gradient-to-r from-primary to-accent"
+                      onClick={() => scrollToSection("#features")}
+                    >
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

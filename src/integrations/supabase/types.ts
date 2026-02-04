@@ -14,16 +14,211 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          class_id: string
+          date: string
+          id: string
+          marked_at: string
+          status: string
+          student_id: string
+        }
+        Insert: {
+          class_id: string
+          date?: string
+          id?: string
+          marked_at?: string
+          status: string
+          student_id: string
+        }
+        Update: {
+          class_id?: string
+          date?: string
+          id?: string
+          marked_at?: string
+          status?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "low_attendance_warnings"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "student_attendance_stats"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          class_date: string
+          created_at: string
+          department: string
+          end_time: string
+          id: string
+          semester: number
+          start_time: string
+          subject_name: string
+          updated_at: string
+        }
+        Insert: {
+          class_date: string
+          created_at?: string
+          department: string
+          end_time: string
+          id?: string
+          semester: number
+          start_time: string
+          subject_name: string
+          updated_at?: string
+        }
+        Update: {
+          class_date?: string
+          created_at?: string
+          department?: string
+          end_time?: string
+          id?: string
+          semester?: number
+          start_time?: string
+          subject_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          id: string
+          message: string
+          sent_at: string
+          title: string
+        }
+        Insert: {
+          id?: string
+          message: string
+          sent_at?: string
+          title: string
+        }
+        Update: {
+          id?: string
+          message?: string
+          sent_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          created_at: string
+          department: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          roll_number: string
+          semester: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          roll_number: string
+          semester: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          roll_number?: string
+          semester?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      low_attendance_warnings: {
+        Row: {
+          attendance_percentage: number | null
+          classes_attended: number | null
+          department: string | null
+          roll_number: string | null
+          semester: number | null
+          student_id: string | null
+          student_name: string | null
+          total_classes: number | null
+        }
+        Relationships: []
+      }
+      student_attendance_stats: {
+        Row: {
+          attendance_percentage: number | null
+          classes_attended: number | null
+          department: string | null
+          roll_number: string | null
+          semester: number | null
+          student_id: string | null
+          student_name: string | null
+          total_classes: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      get_dashboard_stats: { Args: never; Returns: Json }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +345,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
